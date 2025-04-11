@@ -123,39 +123,51 @@ function saveRatingToLocalStorage(heroName, value) {
   localStorage.setItem("rating", JSON.stringify(rating));
 }
 
+function deleteFromLocalStorage(heroName) {
+  const rating = localStorage.getItem("rating");
+  const parsed = JSON.parse(rating);
+  delete parsed[heroName];
+  localStorage.setItem("rating", JSON.stringify(parsed));
+}
+
 function getRatingFromLocalStorage(heroName) {
   const rating = localStorage.getItem("rating");
   if (!rating) return null;
   return JSON.parse(rating)[heroName];
 }
 
-function createHeroElem(heroObj) {
-  const heroContainerElem = createElemWithClass("div", "hero");
-  heroContainerElem.innerHTML = getHeroHTML(heroObj);
-  heroContainerElem.append(renderStarRating(heroObj.name));
-  return heroContainerElem;
+function colorDiscolorStars(starsContainer, userRate) {
+  const stars = starsContainer.querySelectorAll(".star");
+
+  for (let star of stars) {
+    if (star.value <= userRate) {
+      star.classList.add("active");
+    } else {
+      star.classList.remove("active");
+    }
+  }
 }
 
-function getHeroHTML(hero) {
-  const layout = `<div class="hero__text-container">
-    <h2 class="hero__name">${hero.name}</h2>
-    <p class="hero__feature hero__universe">
-    <span class="hero__feature--italic">Вселенная: </span>
-    ${hero.universe}
-    </p>
-    <p class="hero__feature hero__alterego">
-    <span class="hero__feature--italic">Альтер эго: </span>
-    ${hero.alterego}
-    </p>
-    <p class="hero__feature hero__occupation"><span class="hero__feature--italic">Род деятельности: </span>${hero.occupation}</p>
-    <p class="hero__feature hero__friends"><span class="hero__feature--italic">Друзья: </span>${hero.friends}</p>
-    <p class="hero__feature hero__superpowers"><span class="hero__feature--italic">Супер-силы: </span>${hero.superpowers}</p>
-    <p class="hero__feature hero__info">${hero.info}</p>
-    </div>
-    <div class="hero__img-container">
-    <img src="${hero.url}" alt="${hero.name}" class="hero__img"/>
-    </div>`;
-  return layout;
+function rateHero(star) {
+  const userRate = star.value;
+  const starsContainer = star.closest(".stars");
+  colorDiscolorStars(starsContainer, userRate);
+  saveRatingToLocalStorage(starsContainer.dataset.name, userRate);
+}
+
+function unrateHero(star) {
+  const starsContainer = star.closest(".stars");
+  colorDiscolorStars(starsContainer, 0);
+  deleteFromLocalStorage(starsContainer.dataset.name);
+}
+
+function handleStarClick(evt) {
+  const star = evt.target.closest(".star");
+  if (star.classList.contains("active")) {
+    unrateHero(star);
+    return;
+  }
+  rateHero(star);
 }
 
 function createStarRating(heroName) {
@@ -184,29 +196,38 @@ function colorStarsOnCreation(ratingElem) {
 
 function renderStarRating(heroName) {
   const ratingElem = createStarRating(heroName);
-  ratingElem.addEventListener("click", rateHero);
   colorStarsOnCreation(ratingElem);
+  ratingElem.addEventListener("click", handleStarClick);
   return ratingElem;
 }
 
-function rateHero(evt) {
-  const star = evt.target.closest(".star");
-  const userRate = star.value;
-  colorStarsOnRate(star);
-  saveRatingToLocalStorage(starsContainer.dataset.name, userRate);
+function getHeroHTML(hero) {
+  const layout = `<div class="hero__text-container">
+    <h2 class="hero__name">${hero.name}</h2>
+    <p class="hero__feature hero__universe">
+    <span class="hero__feature--italic">Вселенная: </span>
+    ${hero.universe}
+    </p>
+    <p class="hero__feature hero__alterego">
+    <span class="hero__feature--italic">Альтер эго: </span>
+    ${hero.alterego}
+    </p>
+    <p class="hero__feature hero__occupation"><span class="hero__feature--italic">Род деятельности: </span>${hero.occupation}</p>
+    <p class="hero__feature hero__friends"><span class="hero__feature--italic">Друзья: </span>${hero.friends}</p>
+    <p class="hero__feature hero__superpowers"><span class="hero__feature--italic">Супер-силы: </span>${hero.superpowers}</p>
+    <p class="hero__feature hero__info">${hero.info}</p>
+    </div>
+    <div class="hero__img-container">
+    <img src="${hero.url}" alt="${hero.name}" class="hero__img"/>
+    </div>`;
+  return layout;
 }
 
-function colorStarsOnRate(star) {
-  const starsContainer = star.closest(".stars");
-  const stars = starsContainer.querySelectorAll(".star");
-
-  for (let star of stars) {
-    if (star.value <= userRate) {
-      star.classList.add("active");
-    } else {
-      star.classList.remove("active");
-    }
-  }
+function createHeroElem(heroObj) {
+  const heroContainerElem = createElemWithClass("div", "hero");
+  heroContainerElem.innerHTML = getHeroHTML(heroObj);
+  heroContainerElem.append(renderStarRating(heroObj.name));
+  return heroContainerElem;
 }
 
 function renderHeroesArray() {
