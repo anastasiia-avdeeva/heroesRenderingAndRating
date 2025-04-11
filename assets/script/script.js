@@ -170,18 +170,6 @@ function handleStarClick(evt) {
   rateHero(star);
 }
 
-function createStarRating(heroName) {
-  const ulElem = createElemWithClass("ul", "stars");
-  ulElem.dataset.name = heroName;
-  for (let i = 0; i < 5; i++) {
-    const liElem = createElemWithClass("li", "star");
-    liElem.setAttribute("value", i + 1);
-    liElem.textContent = "★";
-    ulElem.append(liElem);
-  }
-  return ulElem;
-}
-
 function colorStarsOnCreation(ratingElem) {
   const heroRating = getRatingFromLocalStorage(ratingElem.dataset.name);
   if (!heroRating) return;
@@ -192,6 +180,18 @@ function colorStarsOnCreation(ratingElem) {
     if (star.value > heroRating) break;
     star.classList.add("active");
   }
+}
+
+function createStarRating(heroName) {
+  const ulElem = createElemWithClass("ul", "stars");
+  ulElem.dataset.name = heroName;
+  for (let i = 0; i < 5; i++) {
+    const liElem = createElemWithClass("li", "star");
+    liElem.setAttribute("value", i + 1);
+    liElem.textContent = "★";
+    ulElem.append(liElem);
+  }
+  return ulElem;
 }
 
 function renderStarRating(heroName) {
