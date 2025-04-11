@@ -117,8 +117,8 @@ function createElemWithClass(tagName, className) {
 }
 
 function getHeroHTML(hero) {
-  const layout = `<h2 class="hero__name">${hero.name}</h2>
-    <div class="hero__text-container">
+  const layout = `<div class="hero__text-container">
+    <h2 class="hero__name">${hero.name}</h2>
     <p class="hero__feature hero__universe">
     <span class="hero__feature--italic">Вселенная: </span>
     ${hero.universe}
