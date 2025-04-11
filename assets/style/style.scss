@@ -40,6 +40,9 @@ h6 {
 //     font-weight: <weight>;
 //     font-style: normal;
 //   }
+.main {
+  margin: 30px 0px;
+}
 
 .title {
   font-family: "Russo One", sans-serif;
@@ -64,21 +67,41 @@ h6 {
 .hero {
   padding: 20px;
   max-width: 600px;
-  flex: 1 1 400px;
-  display: grid;
-  grid-template-rows: repeat(6, min-content) 1fr auto;
-  justify-items: center;
-  align-items: start;
+  height: 770px;
+  flex: 1 1 450px;
+  display: flex;
+  flex-direction: column;
   gap: 15px;
   border-radius: 0.5rem;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-  text-align: justify;
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    cursor: pointer;
+    height: auto;
+  }
+
+  &__text-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-height: 350px; // ограничение в обычном состоянии
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+  }
+
+  &__text-container:hover {
+    overflow: visible;
+    max-height: 2000px;
+  }
 
   &__name {
     font-family: "Russo One", sans-serif;
     font-weight: 400;
     font-style: normal;
     font-size: 35px;
+    align-self: center;
   }
 
   &__feature {
@@ -90,9 +113,13 @@ h6 {
     font-weight: 700;
   }
 
+  &__info {
+    text-align: justify;
+  }
+
   &__img-container {
     width: 100%;
-    height: auto;
+    height: 100%;
   }
 
   &__img {
@@ -100,4 +127,12 @@ h6 {
     width: 100%;
     height: 100%;
   }
+}
+
+.stars {
+  display: flex;
+  flex-direction: row;
+  // color: yellow;
+  color: #d3d3d3;
+  font-size: 40px;
 }

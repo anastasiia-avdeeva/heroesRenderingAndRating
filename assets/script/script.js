@@ -118,22 +118,30 @@ function createElemWithClass(tagName, className) {
 
 function getHeroHTML(hero) {
   const layout = `<h2 class="hero__name">${hero.name}</h2>
-    <p class="hero__feature hero__universe"><span class="hero__feature--italic">Вселенная: </span>${hero.universe}</p>
-    <p class="hero__feature hero__alterego"><span class="hero__feature--italic">Альтер эго: </span>${hero.alterego}</p>
+    <div class="hero__text-container">
+    <p class="hero__feature hero__universe">
+    <span class="hero__feature--italic">Вселенная: </span>
+    ${hero.universe}
+    </p>
+    <p class="hero__feature hero__alterego">
+    <span class="hero__feature--italic">Альтер эго: </span>
+    ${hero.alterego}
+    </p>
     <p class="hero__feature hero__occupation"><span class="hero__feature--italic">Род деятельности: </span>${hero.occupation}</p>
     <p class="hero__feature hero__friends"><span class="hero__feature--italic">Друзья: </span>${hero.friends}</p>
     <p class="hero__feature hero__superpowers"><span class="hero__feature--italic">Супер-силы: </span>${hero.superpowers}</p>
     <p class="hero__feature hero__info">${hero.info}</p>
+    </div>
     <div class="hero__img-container">
     <img src="${hero.url}" alt="${hero.name}" class="hero__img"/>
     </div>`;
   return layout;
 }
 
-function getStarsHTML() {
-  const layout = null;
-  return;
-}
+// function getStarsHTML() {
+//   const layout = null;
+//   return;
+// }
 
 function renderHeroesArray() {
   for (let hero of heroes) {
