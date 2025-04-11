@@ -116,6 +116,26 @@ function createElemWithClass(tagName, className) {
   return newElem;
 }
 
+function saveRatingToLocalStorage(heroName, value) {
+  let rating = localStorage.getItem("rating");
+  rating = rating ? JSON.parse(rating) : {};
+  rating[heroName] = value;
+  localStorage.setItem("rating", JSON.stringify(rating));
+}
+
+function getRatingFromLocalStorage(heroName) {
+  const rating = localStorage.getItem("rating");
+  if (!rating) return null;
+  return JSON.parse(rating)[heroName];
+}
+
+function createHeroElem(heroObj) {
+  const heroContainerElem = createElemWithClass("div", "hero");
+  heroContainerElem.innerHTML = getHeroHTML(heroObj);
+  heroContainerElem.append(renderStarRating(heroObj.name));
+  return heroContainerElem;
+}
+
 function getHeroHTML(hero) {
   const layout = `<div class="hero__text-container">
     <h2 class="hero__name">${hero.name}</h2>
@@ -138,16 +158,60 @@ function getHeroHTML(hero) {
   return layout;
 }
 
-// function getStarsHTML() {
-//   const layout = null;
-//   return;
-// }
+function createStarRating(heroName) {
+  const ulElem = createElemWithClass("ul", "stars");
+  ulElem.dataset.name = heroName;
+  for (let i = 0; i < 5; i++) {
+    const liElem = createElemWithClass("li", "star");
+    liElem.setAttribute("value", i + 1);
+    liElem.textContent = "★";
+    ulElem.append(liElem);
+  }
+  return ulElem;
+}
+
+function colorStarsOnCreation(ratingElem) {
+  const heroRating = getRatingFromLocalStorage(ratingElem.dataset.name);
+  if (!heroRating) return;
+
+  const stars = ratingElem.querySelectorAll(".star");
+
+  for (let star of stars) {
+    if (star.value > heroRating) break;
+    star.classList.add("active");
+  }
+}
+
+function renderStarRating(heroName) {
+  const ratingElem = createStarRating(heroName);
+  ratingElem.addEventListener("click", rateHero);
+  colorStarsOnCreation(ratingElem);
+  return ratingElem;
+}
+
+function rateHero(evt) {
+  const star = evt.target.closest(".star");
+  const userRate = star.value;
+  colorStarsOnRate(star);
+  saveRatingToLocalStorage(starsContainer.dataset.name, userRate);
+}
+
+function colorStarsOnRate(star) {
+  const starsContainer = star.closest(".stars");
+  const stars = starsContainer.querySelectorAll(".star");
+
+  for (let star of stars) {
+    if (star.value <= userRate) {
+      star.classList.add("active");
+    } else {
+      star.classList.remove("active");
+    }
+  }
+}
 
 function renderHeroesArray() {
   for (let hero of heroes) {
-    const heroContainerElem = createElemWithClass("div", "hero");
-    heroContainerElem.innerHTML = getHeroHTML(hero);
-    heroesContainerElem.append(heroContainerElem);
+    heroesContainerElem.append(createHeroElem(hero));
   }
 }
 document.addEventListener("DOMContentLoaded", renderHeroesArray);
