@@ -136,7 +136,7 @@ function getRatingFromLocalStorage(heroName) {
   return JSON.parse(rating)[heroName];
 }
 
-function colorDiscolorStars(starsContainer, userRate) {
+function toggleStarsState(starsContainer, userRate) {
   const stars = starsContainer.querySelectorAll(".star");
 
   for (let star of stars) {
@@ -148,26 +148,24 @@ function colorDiscolorStars(starsContainer, userRate) {
   }
 }
 
-function rateHero(star) {
-  const userRate = star.value;
+function changeHeroRating(star, unrate = false) {
+  const userRate = unrate ? 0 : star.value;
   const starsContainer = star.closest(".stars");
-  colorDiscolorStars(starsContainer, userRate);
-  saveRatingToLocalStorage(starsContainer.dataset.name, userRate);
-}
-
-function unrateHero(star) {
-  const starsContainer = star.closest(".stars");
-  colorDiscolorStars(starsContainer, 0);
-  deleteFromLocalStorage(starsContainer.dataset.name);
+  toggleStarsState(starsContainer, userRate);
+  if (unrate) {
+    deleteFromLocalStorage(starsContainer.dataset.name);
+  } else {
+    saveRatingToLocalStorage(starsContainer.dataset.name, userRate);
+  }
 }
 
 function handleStarClick(evt) {
   const star = evt.target.closest(".star");
   if (star.classList.contains("active")) {
-    unrateHero(star);
+    changeHeroRating(star, true);
     return;
   }
-  rateHero(star);
+  changeHeroRating(star);
 }
 
 function colorStarsOnCreation(ratingElem) {
